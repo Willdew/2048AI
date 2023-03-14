@@ -98,6 +98,7 @@ def check_game_over(board):
     # This function checks if the game is over
     # Input: 4x4 numpy array
     # Output: Boolean
+
     if np.count_nonzero(board) == 16:
         for i in range(4):
             for j in range(4):
@@ -111,7 +112,9 @@ def check_game_over(board):
 
 
 def print_pretty(board):
-    table = Table(title="2048", box=box.ROUNDED, show_header=False, show_lines=True, style="blue", highlight=True, expand=True)
+    #Replace 0 with a space in board
+    board[board == "0"] = ' '
+    table = Table(title="2048", box=box.ROUNDED, show_header=False, show_lines=True, style="magenta", highlight=True, expand=True)
     board_list = board.tolist()
 
     for row in board_list:
