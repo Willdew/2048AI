@@ -2,7 +2,7 @@ import numpy as np
 import random
 
 
-def updateBoard(board, input):
+def update_board(board, input):
     # This function updates the board after each move
     # and returns the updated board
     # Input: 4x4 numpy array
@@ -10,14 +10,15 @@ def updateBoard(board, input):
     newBoard = board
     score = 0
     if input == 'w' or input == 's':
-        newBoard, score = moveVert(board, input)
+        newBoard, score = move_vert(board, input)
     elif input == 'a' or input == "d":
-        newBoard, score = moveHori(board, input)
+        newBoard, score = move_horizontal(board, input)
     if np.array_equal(newBoard, board) == False:
         return newBoard, True, score
     return board, False, score
 
-def moveVert(board, input):
+
+def move_vert(board, input):
     newBoard = np.zeros((4, 4))
     if input == 's':
         board = np.flipud(board)
@@ -27,7 +28,7 @@ def moveVert(board, input):
         newCol = np.zeros(4)
         ind = 0
         multi = False
-        
+
         for j in range(4):
             if col[j] != 0:
                 if ind != 0 and newCol[ind - 1] == col[j] and multi == False:
@@ -43,7 +44,8 @@ def moveVert(board, input):
         newBoard = np.flipud(newBoard)
     return newBoard, score
 
-def moveHori(board, input):
+
+def move_horizontal(board, input):
     newBoard = np.zeros((4, 4))
     if input == 'd':
         board = np.fliplr(board)
@@ -69,7 +71,7 @@ def moveHori(board, input):
     return newBoard, score
 
 
-def addTile(board):
+def add_tile(board):
     # This function adds a tile to the board
     # Input: 4x4 numpy array
     # Output: 4x4 numpy array
@@ -88,7 +90,8 @@ def addTile(board):
             break
     return newBoard
 
-def printBoard(board):
+
+def print_board(board):
     # This function prints the board
     # Input: 4x4 numpy array
     # Output: None
@@ -96,14 +99,14 @@ def printBoard(board):
         print(end='|')
         for j in range(4):
             if board[i, j] == 0:
-                
+
                 print('   ', end='   ')
             else:
                 print('  ', board[i, j], end='  ')
         print()
 
 
-def checkGameOver(board):
+def check_game_over(board):
     # This function checks if the game is over
     # Input: 4x4 numpy array
     # Output: Boolean
@@ -118,20 +121,21 @@ def checkGameOver(board):
     else:
         return False
 
+
 def main():
     # This function runs the game
     # Input: None
     # Output: None
     board = np.zeros((4, 4))
-    board = addTile(board)
-    board = addTile(board)
+    board = add_tile(board)
+    board = add_tile(board)
     print("Use WASD to move the tiles.")
     print("Example: W moves the tiles up. Press Enter after your input to make your move")
     print("Type Q to quit the game.")
-    printBoard(board.astype(int))
+    print_board(board.astype(int))
     score = 0
     while True:
-        if checkGameOver(board):
+        if check_game_over(board):
             print('Game over')
             break
         inp = str(input()).lower()
@@ -140,13 +144,14 @@ def main():
             print("Final score: ", int(score))
             print("Thanks for playing!")
             break
-        newBoard, updated, scoreTurn = updateBoard(board, inp)
+        newBoard, updated, scoreTurn = update_board(board, inp)
         if updated == True:
-            board = addTile(newBoard)
-            printBoard(board.astype(int))
+            board = add_tile(newBoard)
+            print_board(board.astype(int))
             score += scoreTurn
             print("Score: ", int(score))
         else:
             print('Invalid move')
+
 
 main()
