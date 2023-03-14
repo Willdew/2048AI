@@ -1,6 +1,10 @@
 import numpy as np
 import random
 
+from rich import box
+from rich.table import Table
+from rich.console import Console
+
 
 def update_board(board, input):
     # This function updates the board after each move
@@ -90,22 +94,6 @@ def add_tile(board):
             break
     return newBoard
 
-
-def print_board(board):
-    # This function prints the board
-    # Input: 4x4 numpy array
-    # Output: None
-    for i in range(4):
-        print(end='|')
-        for j in range(4):
-            if board[i, j] == 0:
-
-                print('   ', end='   ')
-            else:
-                print('  ', board[i, j], end='  ')
-        print()
-
-
 def check_game_over(board):
     # This function checks if the game is over
     # Input: 4x4 numpy array
@@ -122,6 +110,18 @@ def check_game_over(board):
         return False
 
 
+def print_pretty(board):
+    table = Table(title="2048", box=box.ROUNDED, show_header=False, show_lines=True, style="blue", highlight=True, expand=True)
+    board_list = board.tolist()
+
+    for row in board_list:
+        table.add_row(*row)
+
+    console = Console()
+    console.clear()
+    console.print(table)
+
+
 def main():
     # This function runs the game
     # Input: None
@@ -132,7 +132,8 @@ def main():
     print("Use WASD to move the tiles.")
     print("Example: W moves the tiles up. Press Enter after your input to make your move")
     print("Type Q to quit the game.")
-    print_board(board.astype(int))
+    input("Press Enter to start the game...")
+    print_pretty(board.astype(int).astype(str))
     score = 0
     while True:
         if check_game_over(board):
@@ -147,7 +148,7 @@ def main():
         newBoard, updated, scoreTurn = update_board(board, inp)
         if updated == True:
             board = add_tile(newBoard)
-            print_board(board.astype(int))
+            print_pretty(board.astype(int).astype(str))
             score += scoreTurn
             print("Score: ", int(score))
         else:
