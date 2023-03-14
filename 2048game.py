@@ -4,6 +4,7 @@ import random
 from rich import box
 from rich.table import Table
 from rich.console import Console
+from pyfiglet import Figlet
 
 
 def update_board(board, input):
@@ -114,7 +115,7 @@ def check_game_over(board):
 def print_pretty(board):
     #Replace 0 with a space in board
     board[board == "0"] = ' '
-    table = Table(title="2048", box=box.ROUNDED, show_header=False, show_lines=True, style="magenta", highlight=True, expand=True)
+    table = Table(box=box.ROUNDED, show_header=False, show_lines=True, style="magenta", highlight=True, expand=True)
     board_list = board.tolist()
 
     for row in board_list:
@@ -122,6 +123,9 @@ def print_pretty(board):
 
     console = Console()
     console.clear()
+    f = Figlet(font='alligator')
+    console.clear()
+    console.print(f"[cyan]{f.renderText('2 0 4 8')}[/cyan]")
     console.print(table)
 
 
@@ -132,9 +136,12 @@ def main():
     board = np.zeros((4, 4))
     board = add_tile(board)
     board = add_tile(board)
+    f = Figlet(font='alligator')
+    print(f.renderText('2 0 4 8'))
     print("Use WASD to move the tiles.")
     print("Example: W moves the tiles up. Press Enter after your input to make your move")
     print("Type Q to quit the game.")
+
     input("Press Enter to start the game...")
     print_pretty(board.astype(int).astype(str))
     score = 0
