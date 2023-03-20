@@ -96,7 +96,5 @@ def main():
     else:
         game_loop(game_ai)
 
-
-
-
-main()
+if __name__ == '__main__':
+    main()
