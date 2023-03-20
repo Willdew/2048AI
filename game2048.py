@@ -95,6 +95,7 @@ def add_tile(board):
             break
     return newBoard
 
+
 def check_game_over(board):
     # This function checks if the game is over
     # Input: 4x4 numpy array
@@ -113,7 +114,7 @@ def check_game_over(board):
 
 
 def print_pretty(board):
-    #Replace 0 with a space in board
+    # Replace 0 with a space in board
     board[board == "0"] = ' '
     table = Table(box=box.ROUNDED, show_header=False, show_lines=True, style="magenta", highlight=True, expand=True)
     board_list = board.tolist()
