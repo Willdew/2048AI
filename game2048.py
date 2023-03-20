@@ -110,7 +110,13 @@ def check_game_over(board):
         return True
     else:
         return False
-
+def win_test(board):
+    # This function checks if the player has won
+    # Input: 4x4 numpy array
+    # Output: Boolean
+    if np.max(board) > 1024:
+        return True
+    return False
 
 def print_pretty(board):
     # Replace 0 with a space in board

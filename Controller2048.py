@@ -34,12 +34,16 @@ def game_loop(game_ai, print_board=True):
     board = start_game()
     score = 0
     game_over = False
+    game_won = False
     while(game_over == False):
         move = game_ai.get_move(board)
         board, score, game_over = take_turn(board, move, score)
         if print_board:
             print_pretty(board.astype(int).astype(str))
             print("Score: ", int(score))
+        if win_test(board) and game_won == False:
+            game_won = True
+            print("You won!")
 
     max_tile = np.max(board)
     return score, max_tile
