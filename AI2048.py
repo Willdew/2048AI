@@ -10,6 +10,8 @@ class AI:
         self.max_depth = max_depth
         # Sets up multiprocessing
         mp.freeze_support()
+        self.zero_weight = 1
+        self.edge_weight = 1
         # Spawn starts a new process
         #mp.set_start_method('spawn', force = True)
 
@@ -19,40 +21,17 @@ class AI:
     def get_max_depth(self):
         return self.max_depth
 
+    def set_weights(self, zero_weight, edge_weight):
+        self.zero_weight = zero_weight
+        self.edge_weight = edge_weight
     def evaluate_board(self, board):
-        # score = 0
-        #
-        # # Count the number of empty cells on the board
-        # num_empty = np.sum(board == 0)
-        #
-        # # Score for tiles in same row or column with the same number
-        # same_row_score = np.sum(np.max(board[:-1, :] == board[1:, :], axis=1))
-        # same_col_score = np.sum(np.max(board[:, :-1] == board[:, 1:], axis=0))
-        # score += (same_row_score + same_col_score) * 5
-        #
-        # # Score for order of numbers on board
-        # sorted_board = np.sort(board, axis=None)[::-1].reshape((4, 4))
-        # ordered_score = 0
-        # if sorted_board[0, 3] == np.max(board):
-        #     ordered_score += 10
-        # for i in range(3):
-        #     for j in range(3):
-        #         if sorted_board[i, j + 1] < sorted_board[i, j] < sorted_board[i + 1, j]:
-        #             ordered_score += 1
-        # score += ordered_score
-        #
-        # # Penalty for number of empty cells on board
-        # score += num_empty * 2
-
-        edge_weight = 1
-        zero_weight = 1
         score = 0
         edge = 0
 
-        heuristic = [[4 ** 6, 4 ** 5, 4 ** 4, 4 ** 3],
-                      [4 ** 5, 4 ** 4, 4 ** 3, 4 ** 2],
-                      [4 ** 4, 4 ** 3, 4 ** 2, 4 ** 1],
-                      [4 ** 3, 4 ** 2, 4 ** 1, 4 ** 0]]
+        heuristic = [[4 ** 16, 4 ** 15, 4 ** 14, 4 ** 13],
+                      [4 ** 10, 4 ** 4, 4 ** 11, 4 ** 12],
+                      [4 ** 9, 4 ** 8, 4 ** 7, 4 ** 6],
+                      [4 ** 5, 4 ** 4, 4 ** 3, 4 ** 2]]
 
         for y in range(4):
              for x in range(4):
@@ -61,7 +40,7 @@ class AI:
         zeros = 16 - np.count_nonzero(board)
         #print("edge: ", np.log(edge))
         #print("zeros: ", zeros)
-        score = zero_weight * zeros + edge_weight * np.log(edge)
+        score = self.zero_weight * zeros + self.edge_weight * np.log(edge)
         return score
 
     def maximize(self, board, move, depth=0):
@@ -90,6 +69,7 @@ class AI:
                     new_board[j, k] = 0
         scores[0] /= z
         scores[1] /= z
+
 
         return scores[0] * 0.9 + scores[1] * 0.1
 
