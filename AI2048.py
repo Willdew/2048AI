@@ -53,7 +53,7 @@ class AI:
                       [4 ** 5, 4 ** 4, 4 ** 3, 4 ** 2],
                       [4 ** 4, 4 ** 3, 4 ** 2, 4 ** 1],
                       [4 ** 3, 4 ** 2, 4 ** 1, 4 ** 0]]
-         # Loops through the board and calculates the heuristic
+
         for y in range(4):
              for x in range(4):
                  edge += board[x][y] * heuristic[x][y]
@@ -61,7 +61,7 @@ class AI:
         zeros = 16 - np.count_nonzero(board)
         #print("edge: ", np.log(edge))
         #print("zeros: ", zeros)
-        score = zero_weight * zeros
+        score = zero_weight * zeros + edge_weight * np.log(edge)
         return score
 
     def maximize(self, board, move, depth=0):
