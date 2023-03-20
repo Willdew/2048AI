@@ -1,5 +1,5 @@
 import numpy as np
-from .2048game.py import *
+from game2048 import *
 
 
 
@@ -12,6 +12,7 @@ class AI:
         self.depth = 0
         self.max_depth = 1
         self.best_move = None
+
 
     def maximize(self, depth, board):
         moves = ['w', 'a', 's', 'd']
@@ -42,11 +43,3 @@ class AI:
 
         return np.max(scores)
         
-
-
-
-
-
-
-
-                    
