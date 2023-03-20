@@ -1,13 +1,17 @@
 import numpy as np
 from game2048 import update_board
-
-
+import multiprocessing as mp
+import time
 
 
 class AI:
 
     def __init__(self, max_depth=1):
         self.max_depth = max_depth
+        # Sets up multiprocessing
+        mp.freeze_support()
+        # Spawn starts a new process
+        #mp.set_start_method('spawn', force = True)
 
     def set_max_depth(self, max_depth):
         self.max_depth = max_depth
@@ -55,40 +59,54 @@ class AI:
                  edge += board[x][y] * heuristic[x][y]
 
         zeros = 16 - np.count_nonzero(board)
-        print("edge: ", np.log(edge))
-        print("zeros: ", zeros)
-        score = edge_weight * edge + zero_weight * zeros
+        #print("edge: ", np.log(edge))
+        #print("zeros: ", zeros)
+        score = zero_weight * zeros
         return score
 
-    def maximize(self, board, depth = 0):
+    def maximize(self, board, move, depth=0):
+        scores = np.zeros(2)
+        new_board, updated, _ = update_board(board, move)
+
+        if not updated:
+            return 0
+
+        z = 16 - np.count_nonzero(new_board)
+        for j in range(4):
+            for k in range(4):
+                if new_board[j, k] == 0:
+                    new_board[j, k] = 2
+                    if depth < self.max_depth:
+                        s = self.recurse_board(new_board, depth + 1)
+                        scores[0] += s
+                    else:
+                        scores[0] += self.evaluate_board(new_board)
+                    new_board[j, k] = 4
+                    if depth < self.max_depth:
+                        s = self.recurse_board(new_board, depth + 1)
+                        scores[1] += s
+                    else:
+                        scores[1] += self.evaluate_board(new_board)
+                    new_board[j, k] = 0
+        scores[0] /= z
+        scores[1] /= z
+
+        return scores[0] * 0.9 + scores[1] * 0.1
+
+    def recurse_board(self, board, depth=0):
         moves = ['w', 'a', 's', 'd']
         scores = np.zeros(4)
         for i in range(4):
-            new_board, updated, _  = update_board(board, moves[i])
+            scores[i] = self.maximize(board, moves[i], depth)
 
-            if not updated:
-                continue
+        return np.mean(scores[scores != 0])
 
-            z = 16-np.count_nonzero(new_board)
-            for j in range(4):
-                for k in range(4):
-                    if new_board[j,k] == 0:
-                        new_board[j,k] = 2
-                        if depth < self.max_depth:
-                            s, _ =  self.maximize(new_board, depth + 1)
-                            scores[i] += s
-                        else:
-                            scores[i] += self.evaluate_board(new_board)
 
-                        new_board[j,k] = 4
-                        if depth < self.max_depth:
-                            self.maximize(new_board, depth + 1)
-                        else:
-                            scores[i] =+ self.evaluate_board(new_board)
-                        new_board[j,k] = 0
-            scores[i] /= z
-
-        if depth == 0:
-            self.best_move = moves[np.argmax(scores)]
-
-        return np.mean(scores[scores != 0]), moves[np.argmax(scores)]
+    def get_move(self, board):
+        pool = mp.Pool(processes=4)
+        moves = ['w', 'a', 's', 'd']
+        results = [pool.apply_async(self.maximize, args=(board, move)) for move in moves]
+        pool.close()
+        pool.join()
+        scores = [r.get() for r in results]
+        return moves[np.argmax(scores)]

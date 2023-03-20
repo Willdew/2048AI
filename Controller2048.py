@@ -23,7 +23,7 @@ def main():
             print('Game over')
             break
         #inp = str(input()).lower()
-        _ , inp = game_ai.maximize(board)
+        inp = game_ai.get_move(board)
         if inp == 'q':
             print("Quitting game...")
             print("Final score: ", int(score))
