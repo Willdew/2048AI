@@ -6,7 +6,6 @@ from rich.table import Table
 from rich.console import Console
 from pyfiglet import Figlet
 
-
 def update_board(board, input):
     # This function updates the board after each move
     # and returns the updated board
@@ -128,42 +127,3 @@ def print_pretty(board):
     console.clear()
     console.print(f"[cyan]{f.renderText('2 0 4 8')}[/cyan]")
     console.print(table)
-
-
-def main():
-    # This function runs the game
-    # Input: None
-    # Output: None
-    board = np.zeros((4, 4))
-    board = add_tile(board)
-    board = add_tile(board)
-    f = Figlet(font='alligator')
-    print(f.renderText('2 0 4 8'))
-    print("Use WASD to move the tiles.")
-    print("Example: W moves the tiles up. Press Enter after your input to make your move")
-    print("Type Q to quit the game.")
-
-    input("Press Enter to start the game...")
-    print_pretty(board.astype(int).astype(str))
-    score = 0
-    while True:
-        if check_game_over(board):
-            print('Game over')
-            break
-        inp = str(input()).lower()
-        if inp == 'q':
-            print("Quitting game...")
-            print("Final score: ", int(score))
-            print("Thanks for playing!")
-            break
-        newBoard, updated, scoreTurn = update_board(board, inp)
-        if updated == True:
-            board = add_tile(newBoard)
-            print_pretty(board.astype(int).astype(str))
-            score += scoreTurn
-            print("Score: ", int(score))
-        else:
-            print('Invalid move')
-
-
-main()
